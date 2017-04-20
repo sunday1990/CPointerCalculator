@@ -8,7 +8,9 @@
 
 #import "ViewController.h"
 
-long long int (*pfunc)();
+typedef long long int (*FUNC)();
+
+FUNC pfunc;
 
 long long int inputX;
 
@@ -25,20 +27,17 @@ long long int inputX;
     _inputTv.keyboardType = UIKeyboardTypeNumberPad;
 }
 
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-double calculator(long long x,long long y,long long (*pfunc)()){
+double calculator(long long x,long long y,FUNC func){
     
     double result;
-    
-    result = (*pfunc)(x,y);
-    
-    printf("result:%f",result);
 
+    result = (*func)(x,y);
+    
     return result;
     
 }
@@ -62,7 +61,6 @@ long long int mul(int a ,int b){
 long long int divi(int a,int b){
     
     return a/b;
-    
 }
 
 - (IBAction)addMethod:(UIButton *)sender {
@@ -99,9 +97,9 @@ long long int divi(int a,int b){
 
 }
 
-
 - (IBAction)clearMethod:(UIButton *)sender {
     inputX = 0;
     _inputTv.text = @"";
 }
+
 @end
