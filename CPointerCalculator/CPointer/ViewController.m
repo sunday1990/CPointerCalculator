@@ -8,11 +8,21 @@
 
 #import "ViewController.h"
 
-typedef long long int (*FUNC)();
+//typedef long long int (*FUNC)();
 
-FUNC pfunc;
+/************************************************************************************************/
 
-long long int inputX;
+typedef struct {
+    
+    int x;
+    
+    int y;
+    
+    long long int(*pfunc)();    //定义函数指针
+    
+}Calculator;                    //定义结构体Calculator
+
+static Calculator *cal;         //声明全局静态Calculator指针cal
 
 @interface ViewController ()
 
@@ -23,8 +33,14 @@ long long int inputX;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+  
     self.view.backgroundColor  =  [UIColor grayColor];
+   
     _inputTv.keyboardType = UIKeyboardTypeNumberPad;
+ 
+    //使用的时候必须进行初始化
+    cal = (Calculator *)malloc(sizeof(Calculator));
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -32,73 +48,120 @@ long long int inputX;
     // Dispose of any resources that can be recreated.
 }
 
-double calculator(long long x,long long y,FUNC func){
-    
+/************************************************************************************************/
+
+//double calculator(long long x,long long y,FUNC func){
+//    
+//    double result;
+//
+//    result = (*func)(x,y);
+//    
+//    return result;
+//    
+//}
+
+double calculator(){
+
     double result;
 
-    result = (*func)(x,y);
-    
+    result = (* cal->pfunc)(cal->x,cal->y);
+
     return result;
+
+}
+/************************************************************************************************/
+
+//long long add(int a,int b){
+//    
+//    return a + b;
+//}
+
+long long add(){
     
+    return cal->x + cal->y;
+}
+/************************************************************************************************/
+
+
+//long long int sub(int a,int b){
+//    
+//    return a - b;
+//}
+
+long long int sub(){
+    
+    return cal->x - cal->y;
 }
 
-long long add(int a,int b){
-    
-    return a + b;
-}
+/************************************************************************************************/
 
-long long int sub(int a,int b){
-    
-    return a - b;
-}
+//long long int mul(int a ,int b){
+//    
+//    return a*b;
+//    
+//}
 
-long long int mul(int a ,int b){
+long long int mul(){
     
-    return a*b;
+    return cal->x * cal->y;
     
 }
+/************************************************************************************************/
 
-long long int divi(int a,int b){
+
+//long long int divi(int a,int b){
+//    
+//    return a/b;
+//}
+
+long long int divi(){
     
-    return a/b;
+    if (cal->y == 0) {
+        
+        return cal->x/1;
+    }
+    return cal->x/cal->y;
 }
+/************************************************************************************************/
+
 
 - (IBAction)addMethod:(UIButton *)sender {
-    inputX = _inputTv.text.intValue;
+    cal->x = _inputTv.text.intValue;
+    cal->pfunc = add;
     _inputTv.text = @"";
-    pfunc = add;
 }
 
 - (IBAction)subMethod:(UIButton *)sender {
-    inputX = _inputTv.text.intValue;
+    cal->x = _inputTv.text.intValue;
+    cal->pfunc = sub;
     _inputTv.text = @"";
-    pfunc = sub;
+
 }
 
 - (IBAction)mulMethod:(UIButton *)sender {
-    inputX = _inputTv.text.intValue;
+    cal->x = _inputTv.text.intValue;
+    cal->pfunc = mul;
     _inputTv.text = @"";
-    pfunc = mul;
 
 }
 
 - (IBAction)diviMethod:(id)sender {
-    inputX = _inputTv.text.intValue;
+    cal->x = _inputTv.text.intValue;
+    cal->pfunc = divi;
     _inputTv.text = @"";
-    pfunc = divi;
 
 }
 
 - (IBAction)resultMethod:(UIButton *)sender {
     
-    double result = calculator(inputX, _inputTv.text.intValue, pfunc);
+    cal->y = _inputTv.text.intValue;
     
-    _inputTv.text = @(result).stringValue;
+    _inputTv.text = @(calculator()).stringValue;
 
 }
 
 - (IBAction)clearMethod:(UIButton *)sender {
-    inputX = 0;
+    cal->x = 0;
     _inputTv.text = @"";
 }
 
